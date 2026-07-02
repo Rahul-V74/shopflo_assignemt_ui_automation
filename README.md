@@ -33,7 +33,9 @@ HTML report is generated at `reports/report.html`.
 │   ├── test_login.py           # 11 tests (7p, 4n)
 │   ├── test_inventory.py       # 19 tests (all p)
 │   └── test_checkout.py        # 16 tests (12p, 4n)
-├── data/users.json     # Test user credentials
+├── data/
+│   ├── test_data.py    # Shared constants (no hardcoded strings in tests)
+│   └── users.json      # Test user credentials
 ├── conftest.py         # Playwright fixtures
 └── pytest.ini          # Pytest config
 ```
