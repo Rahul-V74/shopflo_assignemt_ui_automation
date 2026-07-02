@@ -1,4 +1,3 @@
-import json
 import re
 import pytest
 from playwright.sync_api import expect
@@ -24,14 +23,10 @@ from data.test_data import (
     URL_CART,
     URL_ROOT,
 )
+from utils.helpers import load_users
 
 
 P = EXPECTED_PRODUCTS
-
-
-def load_users():
-    with open("data/users.json") as f:
-        return json.load(f)
 
 
 class TestInventory:

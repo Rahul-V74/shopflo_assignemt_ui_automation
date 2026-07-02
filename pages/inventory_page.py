@@ -1,4 +1,5 @@
 from pages.base_page import BasePage
+from playwright.sync_api import expect
 
 
 class InventoryPage(BasePage):
@@ -28,12 +29,16 @@ class InventoryPage(BasePage):
         return self.page.locator('[data-test="inventory-item-desc"]').all_text_contents()
 
     def add_item_to_cart(self, item_id: str):
-        self.page.locator(f'[data-test="add-to-cart-{item_id}"]').click()
-        self.page.wait_for_timeout(300)
+        add_btn = self.page.locator(f'[data-test="add-to-cart-{item_id}"]')
+        remove_btn = self.page.locator(f'[data-test="remove-{item_id}"]')
+        add_btn.click()
+        expect(remove_btn).to_be_visible()
 
     def remove_item_from_cart(self, item_id: str):
-        self.page.locator(f'[data-test="remove-{item_id}"]').click()
-        self.page.wait_for_timeout(300)
+        remove_btn = self.page.locator(f'[data-test="remove-{item_id}"]')
+        add_btn = self.page.locator(f'[data-test="add-to-cart-{item_id}"]')
+        remove_btn.click()
+        expect(add_btn).to_be_visible()
 
     def get_cart_count(self) -> int:
         if self.cart_badge.is_visible():
@@ -42,15 +47,15 @@ class InventoryPage(BasePage):
 
     def sort_by(self, value: str):
         self.sort_dropdown.select_option(value)
-        self.page.wait_for_timeout(500)
+        expect(self.sort_dropdown).to_have_value(value)
 
     def open_menu(self):
         self.burger_menu_btn.click()
-        self.page.wait_for_timeout(500)
+        expect(self.sidebar_menu).to_have_attribute("aria-hidden", "false")
 
     def close_menu(self):
         self.close_menu_btn.click()
-        self.page.wait_for_timeout(500)
+        expect(self.sidebar_menu).to_have_attribute("aria-hidden", "true")
 
     def is_menu_open(self) -> bool:
         return self.sidebar_menu.get_attribute("aria-hidden") == "false"
@@ -64,7 +69,7 @@ class InventoryPage(BasePage):
         self.open_menu()
         self.reset_link.click()
         self.page.wait_for_load_state("networkidle")
-        self.page.wait_for_timeout(500)
+        expect(self.cart_badge).to_have_count(0)
 
     def go_to_cart(self):
         self.cart_link.click()
@@ -83,5 +88,4 @@ class InventoryPage(BasePage):
             names.append(name)
             item_id = self._name_to_item_id(name)
             self.add_item_to_cart(item_id)
-            self.page.wait_for_timeout(1000)
         return names

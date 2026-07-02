@@ -1,4 +1,3 @@
-import json
 import re
 import pytest
 from playwright.sync_api import expect
@@ -19,11 +18,7 @@ from data.test_data import (
     USER_INVALID,
     URL_INVENTORY,
 )
-
-
-def load_users():
-    with open("data/users.json") as f:
-        return json.load(f)
+from utils.helpers import load_users
 
 
 class TestLogin:
